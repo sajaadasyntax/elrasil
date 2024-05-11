@@ -34,6 +34,22 @@ exports.create = (req , res , next) => {
     });
 };
 
+
+exports.all = (req , res , next) => {
+ 
+       transactionServices.getAllTransactions((error, results) => {
+         if (error) {
+           return next(error);
+         } else {
+           res.status(200).send({
+             message: "Transaction created successfully",
+             data: results,
+           });
+         }
+       });
+    
+ };
+
 exports.findAll = (req , res , next) => {
    var model = {
           recieverName: req.query.reciever_name,

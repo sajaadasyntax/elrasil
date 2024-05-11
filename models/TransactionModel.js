@@ -29,5 +29,4 @@ const transaction = mongoose.model(
 )
 )
 
-
 module.exports = { transaction };

@@ -16,24 +16,42 @@ async function createTransaction(params, callback) {
     }); 
 }
 
-async function getTransaction(params, callback) {
-     const recieverName = params.reciever_name;
-     var condition = recieverName
-     ? {
-        recieverName : {$regex: new RegExp(recieverName), $options: "i"}
-     }
-        : {};
-     
+ 
 
-    const TransactionModel =  transaction(params);
-    TransactionModel
-    .find(condition)
-    .then((response) => {
+// this is a test function to resp data
+async function getAllTransactions(callback) {
+    try {
+        transaction.find().then((response) => {
         callback(null, response);
     })
     .catch((error) => {
         callback(error);
-    }); 
+    });
+    } catch (error) {
+      console.error(error);
+    }
+  }
+  
+
+
+async function getTransaction(params, callback) {
+    const recieverName = params.reciever_name;
+    var condition = recieverName
+    ? {
+       recieverName : {$regex: new RegExp(recieverName), $options: "i"}
+    }
+       : {};
+    
+
+   const TransactionModel =  transaction(params);
+   TransactionModel
+   .find(condition)
+   .then((response) => {
+       callback(null, response);
+   })
+   .catch((error) => {
+       callback(error);
+   }); 
 }
 
 
@@ -97,6 +115,7 @@ async function deleteTransaction(params, callback) {
 
 module.exports = {
     createTransaction,
+    getAllTransactions,
     getTransaction,
     getTransactionByID,
     updateTransaction,
