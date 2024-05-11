@@ -21,7 +21,12 @@ async function createTransaction(params, callback) {
 // this is a test function to resp data
 async function getAllTransactions(callback) {
     try {
-        transaction.find().then((response) => {
+
+         
+    transaction.create({reciever_name:"Mohammed Dev"}).then((response) => {
+        callback(null, response);
+    })
+    transaction.find().then((response) => {
         callback(null, response);
     })
     .catch((error) => {
