@@ -3,15 +3,15 @@ const mongoose = require("mongoose");
 const transactionSchema = new mongoose.Schema({
   reciever_name: {
     type: String,
-    //   required: true
+       required: true
   },
   reciever_bankAccount: {
     type: String,
-    //  required: true
+     required: true
   },
   transaction_amount: {
     type: Number,
-    //  required: true
+     required: true
   },
 });
 const transactions = mongoose.model("transactions", transactionSchema);
