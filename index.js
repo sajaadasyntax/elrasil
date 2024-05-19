@@ -4,10 +4,8 @@ const mongoose = require('mongoose');
 const {MONGO_DB_CONFIG} = require("./config/app.config");
 const errors = require('./middlewares/errors');
 
-mongoose.Promise = global.Promise;
 
 mongoose.connect(MONGO_DB_CONFIG.DB, {
-
 }).then(
     () => {
         console.log("Connected to DB");
@@ -18,6 +16,7 @@ mongoose.connect(MONGO_DB_CONFIG.DB, {
     }
 )
 app.use(express.json());
+app.use(express.urlencoded({extended: false}));
 app.use('/uploads',express.static('uploads'));
 app.use('/api', require("./routes/app.routes"));
 app.use(errors.errorHandler);

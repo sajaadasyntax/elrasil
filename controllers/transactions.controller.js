@@ -1,137 +1,77 @@
-const transactionServices = require("../services/transaction.services")
 const upload = require("../middlewares/upload");
-const { transaction } = require("../models/TransactionModel");
+const transactions = require("../models/TransactionModel");
 
 
-exports.create = (req , res , next) => {
-  upload(req, res, function (err){
-        if (err) {
-            return next(err);
-        }
-        else {
-       const url = req.protocol + "://" + req.get(host);
-       const path = req.file != undefined ? req.file.path.replace(/\\/g, "/")  : "" ;
+const getTransactions = async (req, res) =>{
+    try {
+      const trans = await transactions.find({});
+      res.status(200).json(trans);
+    } catch (error) {
+      res.status(404).send({ message: "Book not found" });
+    }
+}
 
-      var model = {
-        recieverName: req.body.reciever_name,
-        recieverBankAccount: req.body.reciever_bankAccount,
-        transactionAmount: req.body.transaction_amount,
-        transactionImage: path != ""? url + "/" + path : "",
-        transactionImageUrl: url + "/uploads/" + path
-      };
-
-      transactionServices.createTransaction(model, (error, results) => {
-        if (error) {
-          return next(error);
-        } else {
-          res.status(200).send({
-            message: "Transaction created successfully",
-            data: results,
-          });
-        }
-      });
-    }     
+const createTransaction = async (req, res) =>{
+  
+    const trans = new transactions({
+      reciever_name: req.body.reciever_name,
+      reciever_bankAccount: req.body.reciever_bankAccount,
+      transaction_amount: req.body.transaction_amount,
     });
-};
-
-
-exports.all = (req , res , next) => {
- 
-       transactionServices.getAllTransactions((error, results) => {
-         if (error) {
-           return next(error);
-         } else {
-           res.status(200).send({
-             message: "Transaction created successfully",
-             data: results,
-           });
-         }
-       });
-    
- };
-
-exports.findAll = (req , res , next) => {
-   var model = {
-          recieverName: req.query.reciever_name,
-        };
   
-        transactionServices.getTransaction(model, (error, results) => {
-          if (error) {
-            return next(error);
-          } else {
-            res.status(200).send({
-              message: "Transaction created successfully",
-              data: results,
-            });
-          }
-        });
-     
-  };
-
-  exports.findOne = (req , res , next) => {
-    var model = {
-           transactionId: req.params.transaction_id,
-         };
-   
-         transactionServices.getTransactionByID(model, (error, results) => {
-           if (error) {
-             return next(error);
-           } else {
-             res.status(200).send({
-               message: "Transaction created successfully",
-               data: results,
-             });
-           }
-         });
-      
-   };   
-
-   exports.update = (req , res , next) => {
-    upload(req, res, function (err){
-          if (err) {
-              return next(err);
-          }
-          else {
-         const url = req.protocol + "://" + req.get(host);
-         const path = req.file != undefined ? req.file.path.replace(/\\/g, "/")  : "" ;
+    try {
+      await trans.save();
+      res.send(trans);
+    } catch (error) {
+      res.status(500).send(error);
+    }
   
-        var model = {
-          recieverName: req.body.reciever_name,
-          recieverBankAccount: req.body.reciever_bankAccount,
-          transactionAmount: req.body.transaction_amount,
-          transaction_id: req.params.transaction_id,
-          transactionImage: path != ""? url + "/" + path : "",
-          transactionImageUrl: url + "/uploads/" + path
-        };
-  
-        transactionServices.updateTransaction(model, (error, results) => {
-          if (error) {
-            return next(error);
-          } else {
-            res.status(200).send({
-              message: "Transaction created successfully",
-              data: results,
-            });
-          }
-        });
-      }     
-      });
-  };
+}
 
-  exports.delete = (req , res , next) => {
-    var model = {
-           transactionId: req.params.transaction_id,
-         };
-   
-         transactionServices.deleteTransaction(model, (error, results) => {
-           if (error) {
-             return next(error);
-           } else {
-             res.status(200).send({
-               message: "Transaction created successfully",
-               data: results,
-             });
-           }
-         });
-      
-   }; 
+const getTransaction = async (req, res) =>{
+  try {
+    const { id } = req.params;
+    const trans = await transactions.findById(id);
+    res.status(200).json(trans);
+  } catch (error) {
+    res.status(500).send({ message: "Book not found" });
+  }
+}
+
+const updateTransaction = async (req, res) =>{
+  try {
+    const { id } = req.params;
+    const trans = await transactions.findByIdAndUpdate(id, req.body);
+   if (!trans) {
+    res.status(404).send({ message: "Book not found" });
+
+   }
+
+   const updatedTrans = await transactions.findById(id);
+   res.status(200).json(updatedTrans);
+
+  } catch (error) {
+    res.status(500).send({ message: "Book not found" });
+  }
+}
+
+const deleteTransaction = async (req, res) =>{
+  try {
+    const { id } = req.params;
+  
+    const trans = await transactions.findByIdAndDelete(id);
+    if (!trans) {
+      res.status(404).json({ message: "transaction not found" });
+    }
+    res.status(200).json({ message: "transaction deleted successfully" });
+   } catch (error) {
+  res.status(500).json({ message: error.message });
+   }
+}
+   module.exports = {
+    getTransactions,
+    createTransaction,
+    updateTransaction,
+    deleteTransaction,
+    getTransaction
+   }
