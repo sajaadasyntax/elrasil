@@ -12,9 +12,9 @@ const getTransactions = async (req, res) => {
 
 const createTransaction = async (req, res) => {
   const trans = new transactions({
-    reciever_name: req.body.reciever_name,
-    reciever_bankAccount: req.body.reciever_bankAccount,
-    transaction_amount: req.body.transaction_amount,
+    recieverName: req.body.recieverName,
+    recieverPhone: req.body.recieverPhone,
+    recieverEmail: req.body.recieverEmail,
   });
 
   try {

@@ -1,16 +1,16 @@
 const mongoose = require("mongoose");
 
 const transactionSchema = new mongoose.Schema({
-  reciever_name: {
+  recieverName: {
     type: String,
        required: true
   },
-  reciever_bankAccount: {
+  recieverPhone: {
     type: String,
      required: true
   },
-  transaction_amount: {
-    type: Number,
+  recieverEmail: {
+    type: String,
      required: true
   },
 });
