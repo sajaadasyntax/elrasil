@@ -3,8 +3,8 @@ const app = express();
 const mongoose = require('mongoose');
 const {MONGO_DB_CONFIG} = require("./config/app.config");
 const errors = require('./middlewares/errors');
-
-
+const authRouter = require('./routes/auth.routes');
+const bodyparser = require('body-parser');
 mongoose.connect(MONGO_DB_CONFIG.DB, {
 }).then(
     () => {
@@ -15,10 +15,13 @@ mongoose.connect(MONGO_DB_CONFIG.DB, {
         console.log(error);
     }
 )
+app.use(bodyparser.json());
+app.use(bodyparser.urlencoded({ extended: false }));
 app.use(express.json());
 app.use(express.urlencoded());
 app.use('/uploads',express.static('uploads'));
 app.use('/api', require("./routes/app.routes"));
+app.use('/api/user', authRouter);
 app.use(errors.errorHandler);
 app.use(function(req, res, next) {
     res.header('Access-Control-Allow-Origin', 'http://localhost:4000');
