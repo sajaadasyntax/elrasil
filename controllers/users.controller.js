@@ -6,7 +6,7 @@ const email = req.body.email;
 
 const userExists = await User.findOne({ email });
 if (!userExists) {
-    const newUser = User.create(req.body);
+    const newUser = await User.create(req.body);
     res.json(newUser);
 }
 else {
