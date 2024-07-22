@@ -5,6 +5,8 @@ const {MONGO_DB_CONFIG} = require("./config/app.config");
 const errors = require('./middlewares/errors');
 const authRouter = require('./routes/auth.routes');
 const bodyparser = require('body-parser');
+require('dotenv').config()
+
 mongoose.connect(MONGO_DB_CONFIG.DB, {
 }).then(
     () => {
