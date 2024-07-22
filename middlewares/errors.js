@@ -1,15 +1,19 @@
-function errorHandler(err, req, res, next) {
-    if (typeof err === 'string') {
-        return res.status(400).json({message : err});
-}
-if (err.name === 'validationError') {
-return res.status(400).json({message : err.message});
-}
+function errorHandler( req, res, next) {
+const statusCode = res.statusCode == 200 ? 500: res.statusCode;
+res.status(statusCode);
+response.json({
+    message : err?.message,
+    stack : err?.stack,
+});
+};
+const notFound = ( req, res, next) => {
+const error = new Error(`not found: ${req.originalUrl}`);
+response.status(404);
+next(error);
 
-return res.status(500).json({message : err.message});
-
-}
-
+};
 module.exports = {
-    errorHandler
+    errorHandler,
+    notFound
+
 }

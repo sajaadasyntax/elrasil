@@ -22,6 +22,7 @@ app.use(express.urlencoded());
 app.use('/uploads',express.static('uploads'));
 app.use('/api', require("./routes/app.routes"));
 app.use('/api/user', authRouter);
+app.use(errors.notFound);
 app.use(errors.errorHandler);
 app.use(function(req, res, next) {
     res.header('Access-Control-Allow-Origin', 'http://localhost:4000');
