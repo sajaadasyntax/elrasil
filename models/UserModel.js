@@ -28,7 +28,11 @@ var userSchema = new mongoose.Schema({
         type:String,
         default:"user",
     },
-});
+
+},
+{
+    timestamps: true,
+},);
 
 userSchema.pre('save', async function(next) {
     const salt = bcrypt.genSaltSync(10);

@@ -28,5 +28,56 @@ const loginUserController = asyncHandler(async (req, res) => {
   } else {
     throw new Error("Invalid Credentials");
   }
-});   
-module.exports = { CreateUser, loginUserController };
+}); 
+
+const getAllUsers = asyncHandler(async (req, res) => {
+    try{
+      const getUsers = await User.find();
+      res.json(getUsers);  
+
+     } catch(error){ {
+       throw new Error(error);
+     }
+   
+}});
+
+const getUser = asyncHandler(async (req, res) => {
+   const {id} = req.params;
+  try{
+   const getuser = await User.findById(id);
+   res.json(getuser);    
+  } catch(error){
+    throw new Error(error);
+  }
+});
+
+const deleteUser = asyncHandler(async (req, res) => {
+    const {id} = req.params;
+   try{
+    const deleteuser = await User.findByIdAndDelete(id);
+    res.json(deleteuser);    
+   } catch(error){
+     throw new Error(error);
+   }
+ });
+
+ const updateaUser = asyncHandler(async (req, res) => {
+    const {id} = req.params;
+   try{
+    const updateduser = await User.findByIdAndUpdate(id,
+        {
+            firstname : req?.body?.firstname,
+            lastname : req?.body?.lastname,
+            mobile : req?.body?.mobile,
+            email : req?.body?.email,
+        },
+      {
+        new: true,
+      });
+    
+    res.json(updateduser);    
+   } catch(error){
+     throw new Error(error);
+   }
+ });
+module.exports = { CreateUser, loginUserController, getAllUsers , getUser ,deleteUser, updateaUser};
