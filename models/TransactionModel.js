@@ -1,6 +1,10 @@
 const mongoose = require("mongoose");
 
 const transactionSchema = new mongoose.Schema({
+  senderID: {
+    type: String,
+       required: true
+  },
   recieverName: {
     type: String,
        required: true
@@ -13,6 +17,13 @@ const transactionSchema = new mongoose.Schema({
     type: String,
      required: true
   },
+  PaymentProof: {
+    type: String,
+     required: true
+  },
+},
+{
+  timestamps : true,
 });
 const transactions = mongoose.model("transactions", transactionSchema);
 
