@@ -5,6 +5,7 @@ const {MONGO_DB_CONFIG} = require("./config/app.config");
 const errors = require('./middlewares/errors');
 const authRouter = require('./routes/auth.routes');
 const bodyparser = require('body-parser');
+const cookieParser = require('cookie-parser');
 require('dotenv').config()
 
 mongoose.connect(MONGO_DB_CONFIG.DB, {
@@ -19,8 +20,7 @@ mongoose.connect(MONGO_DB_CONFIG.DB, {
 )
 app.use(bodyparser.json());
 app.use(bodyparser.urlencoded({ extended: false }));
-app.use(express.json());
-app.use(express.urlencoded());
+app.use(cookieParser());
 app.use('/uploads',express.static('uploads'));
 app.use('/api', require("./routes/app.routes"));
 app.use('/api/user', authRouter);

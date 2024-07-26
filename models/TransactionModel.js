@@ -10,7 +10,7 @@ const transactionSchema = new mongoose.Schema({
        required: true
   },
   recieverPhone: {
-    type: String,
+    type: Number,
      required: true
   },
   recieverEmail: {
@@ -25,6 +25,6 @@ const transactionSchema = new mongoose.Schema({
 {
   timestamps : true,
 });
-const transactions = mongoose.model("transactions", transactionSchema);
+const transaction = mongoose.model("Transaction", transactionSchema);
 
 module.exports = transactions;

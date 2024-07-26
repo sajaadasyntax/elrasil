@@ -1,6 +1,10 @@
+const validateMongodbid = require("../_util/validatemongodbID");
 const { generateToken } = require("../config/jwtToken");
+const { generateRefreshToken } = require("../config/refreshtoken");
 const User = require("../models/UserModel");
 const asyncHandler = require("express-async-handler");
+const jwt = require('jsonwebtoken');
+
 
 const CreateUser = asyncHandler(async (req, res) => {
   const email = req.body.email;
@@ -17,6 +21,12 @@ const loginUserController = asyncHandler(async (req, res) => {
  const { email, password } = req.body;
  const findUser = await User.findOne({ email });
  if (findUser && (await findUser.isPasswordMatched(password))) {
+  const refreshToken = await generateRefreshToken(findUser._id);
+  const  updateuser = await User.findByIdAndUpdate(findUser.id, {refreshToken: refreshToken}, {new : true});
+  res.cookie("refreshToken", refreshToken, {
+    httpOnly: true,
+    maxAge: 72 * 60 * 60 * 1000
+  });
     res.json({
         id : findUser?.id,
         firstname : findUser?.firstname,
@@ -30,6 +40,46 @@ const loginUserController = asyncHandler(async (req, res) => {
   }
 }); 
 
+
+const handleRefrshToken = asyncHandler(async (req, res) => {
+const cookies = req.cookies;
+if (!cookies?.refreshToken) throw new Error("No refresh token in cookies");
+const refreshToken = cookies.refreshToken;
+const user = await User.findOne({ refreshToken });
+if (!user) throw new Error(" No refresh token in the database or not matched");
+jwt.verify(refreshToken, process.env.JWT_SECRET, (err, decoded) => {
+  if (err || user.id !== decoded.id) {
+     throw new Error ("There is something wrong with the refresh token");
+  }
+  const accessToken = generateToken(user?._id); 
+  res.json({ accessToken });
+});
+});
+
+
+const logout = asyncHandler(async (req, res) => {
+  const cookies = req.cookies;
+  if (!cookies?.refreshToken) throw new Error("No refresh token in cookies");
+  const RefreshToken = cookies.refreshToken;
+  const user = await User.findOne({ RefreshToken });
+  if (!user) {
+    res.clearCookie("refreshToken", {
+      httpOnly: true,
+      secure : true
+    });
+    return res.sendStatus(204);
+  }
+   await User.findOneAndUpdate(RefreshToken, { 
+    refreshToken: "",
+   });
+   res.clearCookie("refreshToken", {
+    httpOnly: true,
+    secure : true
+  });
+  return res.sendStatus(204);
+
+});
+
 const getAllUsers = asyncHandler(async (req, res) => {
     try{
       const getUsers = await User.find();
@@ -42,7 +92,8 @@ const getAllUsers = asyncHandler(async (req, res) => {
 }});
 
 const getUser = asyncHandler(async (req, res) => {
-   const {id} = req.params;
+   const {id} = req.user;
+   validateMongodbid(id);
   try{
    const getuser = await User.findById(id);
    res.json(getuser);    
@@ -52,7 +103,9 @@ const getUser = asyncHandler(async (req, res) => {
 });
 
 const deleteUser = asyncHandler(async (req, res) => {
-    const {id} = req.params;
+    const {id} = req.user;
+    validateMongodbid(id);
+
    try{
     const deleteuser = await User.findByIdAndDelete(id);
     res.json(deleteuser);    
@@ -62,9 +115,11 @@ const deleteUser = asyncHandler(async (req, res) => {
  });
 
  const updateaUser = asyncHandler(async (req, res) => {
-    const {id} = req.params;
+    const {_id} = req.user;
+    validateMongodbid(_id);
+
    try{
-    const updateduser = await User.findByIdAndUpdate(id,
+    const updateduser = await User.findByIdAndUpdate(_id,
         {
             firstname : req?.body?.firstname,
             lastname : req?.body?.lastname,
@@ -80,4 +135,4 @@ const deleteUser = asyncHandler(async (req, res) => {
      throw new Error(error);
    }
  });
-module.exports = { CreateUser, loginUserController, getAllUsers , getUser ,deleteUser, updateaUser};
+module.exports = { CreateUser, loginUserController, getAllUsers , getUser ,deleteUser, updateaUser, handleRefrshToken, logout};
