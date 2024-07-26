@@ -1,19 +1,26 @@
-const Transaction = require("../models/TransactionModel");
+const { Transaction } = require("../models/TransactionModel");
+const { User } = require("../models/UserModel");
 
 const getTransactions = async (req, res) => {
   try {
+    const user = await User.findOne({ RefreshToken });
+
     const trans = await Transaction.find({});
     res.status(200).json(trans);
   } catch (error) {
-    res.status(404).send({ message: "Book not found" });
+    res.status(404).send({ message: "Transaction not found" });
   }
 };
 
 const createTransaction = async (req, res) => {
+  const user = await User.findOne({ RefreshToken });
+
   const trans = new Transaction({
-    recieverName: req.body.recieverName,
-    recieverPhone: req.body.recieverPhone,
-    recieverEmail: req.body.recieverEmail,
+    recieverName: user.id,
+    recieverPhone: req?.body?.recieverPhone,
+    recieverEmail: req?.body?.recieverEmail,
+    PaymentProof: req?.body?.PaymentProof,
+    senderID: req?.body?.senderID,
   });
 
   try {
