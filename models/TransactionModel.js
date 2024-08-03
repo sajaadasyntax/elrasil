@@ -13,13 +13,28 @@ const transactionSchema = new mongoose.Schema({
     type: Number,
      required: true
   },
-  recieverEmail: {
+  purposeOfTransaction: {
+    type: String,
+     required: true
+  },
+  TransactionAmount: {
     type: String,
      required: true
   },
   PaymentProof: {
     type: String,
      required: true
+  },
+  PaymentStatus: {
+    type: String,
+    default: "Not Processed",
+    enum: [
+      "Not Processed",
+      "Processing",
+      "Dispatched",
+      "Cancelled",
+      "Delivered",
+    ],
   },
 },
 {

@@ -4,10 +4,11 @@ const mongoose = require('mongoose');
 const {MONGO_DB_CONFIG} = require("./config/app.config");
 const errors = require('./middlewares/errors');
 const authRouter = require('./routes/auth.routes');
+const appRouter = require('./routes/app.routes');
 const bodyparser = require('body-parser');
 const cookieParser = require('cookie-parser');
 require('dotenv').config()
-
+const adminRouter = require('./routes/admin.routes');
 mongoose.connect(MONGO_DB_CONFIG.DB, {
 }).then(
     () => {
@@ -24,6 +25,8 @@ app.use(cookieParser());
 app.use('/uploads',express.static('uploads'));
 app.use('/api', require("./routes/app.routes"));
 app.use('/api/user', authRouter);
+app.use('/api/admin', adminRouter);
+app.use('/api/app', appRouter);
 app.use(errors.notFound);
 app.use(errors.errorHandler);
 app.use(function(req, res, next) {

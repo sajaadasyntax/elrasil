@@ -1,4 +1,3 @@
-const validateMongodbid = require("../_util/validatemongodbID");
 const { generateToken } = require("../config/jwtToken");
 const { generateRefreshToken } = require("../config/refreshtoken");
 const User = require("../models/UserModel");
@@ -80,59 +79,39 @@ const logout = asyncHandler(async (req, res) => {
 
 });
 
-const getAllUsers = asyncHandler(async (req, res) => {
-    try{
-      const getUsers = await User.find();
-      res.json(getUsers);  
-
-     } catch(error){ {
-       throw new Error(error);
-     }
-   
-}});
-
 const getUser = asyncHandler(async (req, res) => {
-   const {id} = req.user;
-   validateMongodbid(id);
-  try{
-   const getuser = await User.findById(id);
-   res.json(getuser);    
-  } catch(error){
-    throw new Error(error);
-  }
+  const {id} = req.params;
+  validateMongodbid(id);
+ try{
+  const getuser = await User.findById(id);
+  res.json(getuser);    
+ } catch(error){
+   throw new Error(error);
+ }
 });
 
-const deleteUser = asyncHandler(async (req, res) => {
-    const {id} = req.user;
-    validateMongodbid(id);
 
-   try{
-    const deleteuser = await User.findByIdAndDelete(id);
-    res.json(deleteuser);    
-   } catch(error){
-     throw new Error(error);
-   }
- });
+const updateaUser = asyncHandler(async (req, res) => {
+  const {id} = req.params;
+  validateMongodbid(id);
 
- const updateaUser = asyncHandler(async (req, res) => {
-    const {_id} = req.user;
-    validateMongodbid(_id);
-
-   try{
-    const updateduser = await User.findByIdAndUpdate(_id,
-        {
-            firstname : req?.body?.firstname,
-            lastname : req?.body?.lastname,
-            mobile : req?.body?.mobile,
-            email : req?.body?.email,
-        },
+ try{
+  const updateduser = await User.findByIdAndUpdate(id,
       {
-        new: true,
-      });
-    
-    res.json(updateduser);    
-   } catch(error){
-     throw new Error(error);
-   }
- });
-module.exports = { CreateUser, loginUserController, getAllUsers , getUser ,deleteUser, updateaUser, handleRefrshToken, logout};
+          firstname : req?.body?.firstname,
+          lastname : req?.body?.lastname,
+          mobile : req?.body?.mobile,
+          email : req?.body?.email,
+      },
+    {
+      new: true,
+    });
+  console.log(updateduser.firstname)
+  res.json("user updated successfully");    
+ } catch(error){
+   throw new Error(error);
+ }
+});
+
+ 
+module.exports = { CreateUser, loginUserController, handleRefrshToken, logout, getUser, updateaUser};
