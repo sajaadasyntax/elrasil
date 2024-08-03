@@ -3,6 +3,8 @@ const { generateRefreshToken } = require("../config/refreshtoken");
 const User = require("../models/UserModel");
 const asyncHandler = require("express-async-handler");
 const jwt = require('jsonwebtoken');
+const validateMongodbid = require("../_util/validatemongodbID");
+
 
 
 const CreateUser = asyncHandler(async (req, res) => {
@@ -80,7 +82,7 @@ const logout = asyncHandler(async (req, res) => {
 });
 
 const getUser = asyncHandler(async (req, res) => {
-  const {id} = req.params;
+  const {id} = req.user;
   validateMongodbid(id);
  try{
   const getuser = await User.findById(id);
@@ -92,7 +94,7 @@ const getUser = asyncHandler(async (req, res) => {
 
 
 const updateaUser = asyncHandler(async (req, res) => {
-  const {id} = req.params;
+  const {id} = req.user;
   validateMongodbid(id);
 
  try{

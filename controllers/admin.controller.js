@@ -1,4 +1,5 @@
 const { Transaction } = require("../models/TransactionModel");
+const { Currency } = require("../models/currencyRates");
 const User = require("../models/UserModel");
 const validateMongodbid = require("../_util/validatemongodbID");
 const asyncHandler = require("express-async-handler");
@@ -74,7 +75,18 @@ const getTransaction = asyncHandler(async (req, res) => {
 const updateTransaction = asyncHandler(async (req, res) => {
   try {
     const { id } = req.params;
-    const trans = await Transaction.findByIdAndUpdate(id, req.body);
+    const trans = await Transaction.findByIdAndUpdate(id, {
+      recieverName : req?.body?.recieverName,
+      recieverPhone : req?.body?.recieverPhone,
+      purposeOfTransaction : req?.body?.purposeOfTransaction,
+      TransactionAmount : req?.body?.TransactionAmount,
+      PaymentProof : req?.body?.PaymentProof,
+      PaymentStatus : req?.body?.PaymentStatus,
+
+    },
+  {
+    new: true,
+  });
     if (!trans) {
       res.status(404).send({ message: "Transaction not found" });
     }
@@ -111,5 +123,24 @@ const getUserForAdmin = asyncHandler(async (req, res) => {
  }
 });
 
+const updateRate = asyncHandler(async (req, res) => {
+  const cookies = req.cookies;
+if (!cookies?.refreshToken) throw new Error("No refresh token in cookies");
+const refreshToken = cookies.refreshToken;
+  const user = await User.findOne({ refreshToken });
+  try {
+  const id = "66ae214b90a4b20dde155544";
+  const rate = await Currency.findByIdAndUpdate(id, {
+    rate : req?.body?.rate,
 
-module.exports = { getAllUsers , getUserForAdmin ,deleteUser, updateaUserforAdmin,  getTransactions, updateTransaction,deleteTransaction,getTransaction};
+  },
+    {
+      new: true,
+    });
+ 
+    res.status(200).send(rate);
+  } catch (error) {
+    res.status(500).send(error);
+  }
+});
+module.exports = { getAllUsers , getUserForAdmin ,deleteUser, updateaUserforAdmin,  getTransactions, updateTransaction,deleteTransaction,getTransaction, updateRate};

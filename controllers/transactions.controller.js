@@ -1,7 +1,7 @@
 const { Transaction } = require("../models/TransactionModel");
 const User = require("../models/UserModel");
 const asyncHandler = require("express-async-handler");
-
+const { Currency } = require("../models/currencyRates");
 
 
 const getUserTransaction = asyncHandler(async (req, res) => {
@@ -52,10 +52,21 @@ const refreshToken = cookies.refreshToken;
 });
 
 
+const getRate = asyncHandler(async (req, res) => {
+  try {  
+   const id = "66ae214b90a4b20dde155544";
+    const rate = await Currency.findById(id);
+    res.status(200).json(rate);
+  } catch (error) {
+    res.status(500).send({ message: "rate not available" });
+  }
+});
+
 
 
 module.exports = {
   getUserTransactions,
   createTransaction,
-  getUserTransaction
+  getUserTransaction,
+  getRate
 };
