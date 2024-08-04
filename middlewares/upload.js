@@ -36,4 +36,4 @@ let upload = multer({
     fileSize: 1048576, //10MB
 })
 
-module.exports = upload.single("proofOfDelivery")
+module.exports = { upload };

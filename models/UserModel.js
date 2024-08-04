@@ -5,10 +5,13 @@ var userSchema = new mongoose.Schema({
     firstname:{
         type:String,
         required:true,
+        unique:false,
     },
     lastname:{
         type:String,
         required:true,
+        unique:false,
+
     },
     mobile:{
         type:String,
@@ -21,6 +24,10 @@ var userSchema = new mongoose.Schema({
         unique:true,
     },
     password:{
+        type:String,
+        required:true,
+    },
+    ImageUrl:{
         type:String,
         required:true,
     },
