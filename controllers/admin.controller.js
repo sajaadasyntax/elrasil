@@ -1,8 +1,10 @@
 const { Transaction } = require("../models/TransactionModel");
 const { Currency } = require("../models/currencyRates");
+const { MBOk } = require("../models/mbokModel");
 const User = require("../models/UserModel");
 const validateMongodbid = require("../_util/validatemongodbID");
 const asyncHandler = require("express-async-handler");
+
 
 const getAllUsers = asyncHandler(async (req, res) => {
   try{
@@ -124,15 +126,10 @@ const getUserForAdmin = asyncHandler(async (req, res) => {
 });
 
 const updateRate = asyncHandler(async (req, res) => {
-  const cookies = req.cookies;
-if (!cookies?.refreshToken) throw new Error("No refresh token in cookies");
-const refreshToken = cookies.refreshToken;
-  const user = await User.findOne({ refreshToken });
   try {
   const id = "66ae214b90a4b20dde155544";
   const rate = await Currency.findByIdAndUpdate(id, {
     rate : req?.body?.rate,
-
   },
     {
       new: true,
@@ -143,4 +140,26 @@ const refreshToken = cookies.refreshToken;
     res.status(500).send(error);
   }
 });
-module.exports = { getAllUsers , getUserForAdmin ,deleteUser, updateaUserforAdmin,  getTransactions, updateTransaction,deleteTransaction,getTransaction, updateRate};
+
+
+
+const mbokUpdate = asyncHandler(async (req, res) => {
+
+    try {
+      const id = "66af8549ff9c717184eaa777";
+      const mbok = await MBOk.findByIdAndUpdate(id, {
+        mBbokNumber: req?.body?.mBbokNumber,
+        mBbokName: req?.body?.mBbokName,
+
+      },
+        {
+          new: true,
+        });
+     
+        res.status(200).send(mbok);
+      } catch (error) {
+        res.status(500).send(error);
+      }
+});
+
+module.exports = { getAllUsers , getUserForAdmin ,deleteUser, updateaUserforAdmin,  getTransactions, updateTransaction,deleteTransaction,getTransaction, updateRate, mbokUpdate};

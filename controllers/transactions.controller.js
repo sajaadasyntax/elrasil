@@ -2,6 +2,7 @@ const { Transaction } = require("../models/TransactionModel");
 const User = require("../models/UserModel");
 const asyncHandler = require("express-async-handler");
 const { Currency } = require("../models/currencyRates");
+const { MBOk } = require("../models/mbokModel");
 
 
 const getUserTransaction = asyncHandler(async (req, res) => {
@@ -63,10 +64,20 @@ const getRate = asyncHandler(async (req, res) => {
 });
 
 
+const getMBokDetails = asyncHandler(async (req, res) => {
+  try {  
+   const id = "66af8549ff9c717184eaa777";
+    const mbok = await MBOk.findById(id);
+    res.status(200).json(mbok);
+  } catch (error) {
+    res.status(500).send({ message: "mbok not available" });
+  }
+});
 
 module.exports = {
   getUserTransactions,
   createTransaction,
   getUserTransaction,
-  getRate
+  getRate,
+  getMBokDetails
 };
