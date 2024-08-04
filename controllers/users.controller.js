@@ -4,14 +4,25 @@ const User = require("../models/UserModel");
 const asyncHandler = require("express-async-handler");
 const jwt = require('jsonwebtoken');
 const validateMongodbid = require("../_util/validatemongodbID");
-
+const { upload } = require('../middlewares/upload');
 
 
 const CreateUser = asyncHandler(async (req, res) => {
   const email = req.body.email;
+  const fileName = req.file.path;
+  console.log(req.file.path);
+  const basePath = `${req.protocol}://${req.get('host')}/`;
   const userExists = await User.findOne({ email });
   if (!userExists) {
-    const newUser = await User.create(req.body);
+    const newUser = await User.create({
+      firstname: req?.body?.firstname,
+      lastname: req?.body?.lastname,
+      email: req?.body?.email,
+      password: req?.body?.password,
+      mobile: req?.body?.mobile,
+      ImageUrl: `${basePath}${fileName}`
+
+    });
     res.json(newUser);
   } else {
     throw new Error("User already exists");

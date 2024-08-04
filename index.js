@@ -1,7 +1,6 @@
 const express = require('express');
 const app = express();
 const mongoose = require('mongoose');
-const {MONGO_DB_CONFIG} = require("./config/app.config");
 const errors = require('./middlewares/errors');
 const authRouter = require('./routes/auth.routes');
 const appRouter = require('./routes/app.routes');
@@ -21,7 +20,7 @@ const limiter = rateLimit({
 
 // Apply the rate limiting middleware to all requests.
 app.use(limiter)
-mongoose.connect(MONGO_DB_CONFIG.DB, {
+mongoose.connect(process.env.MONGODB_SECRET, {
 }).then(
     () => {
         console.log("Connected to DB");

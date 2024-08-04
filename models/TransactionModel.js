@@ -27,12 +27,11 @@ const transactionSchema = new mongoose.Schema({
   },
   PaymentStatus: {
     type: String,
-    default: "Not Processed",
+    default: "Pending",
     enum: [
-      "Not Processed",
-      "Processing",
-      "Dispatched",
-      "Cancelled",
+      "Pending",
+      "Payment Confirmed",
+      "Payment Rejected",
       "Delivered",
     ],
   },
