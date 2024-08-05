@@ -8,11 +8,13 @@ const { upload } = require('../middlewares/upload');
 
 
 const CreateUser = asyncHandler(async (req, res) => {
-  const email = req.body.email;
-  const fileName = req.file.path;
+  const mobile = req.body.mobile;
   console.log(req.file.path);
+
+  const fileName = req.file.path;
+  console.log(req.body.mobile);
   const basePath = `${req.protocol}://${req.get('host')}/`;
-  const userExists = await User.findOne({ email });
+  const userExists = await User.findOne({ mobile });
   if (!userExists) {
     const newUser = await User.create({
       firstname: req?.body?.firstname,
@@ -30,8 +32,8 @@ const CreateUser = asyncHandler(async (req, res) => {
 });
 
 const loginUserController = asyncHandler(async (req, res) => {
- const { email, password } = req.body;
- const findUser = await User.findOne({ email });
+ const { mobile, password } = req.body;
+ const findUser = await User.findOne({ mobile });
  if (findUser && (await findUser.isPasswordMatched(password))) {
   const refreshToken = await generateRefreshToken(findUser._id);
   const  updateuser = await User.findByIdAndUpdate(findUser.id, {refreshToken: refreshToken}, {new : true});
@@ -45,6 +47,7 @@ const loginUserController = asyncHandler(async (req, res) => {
         lastname : findUser?.lastname,
         mobile : findUser?.mobile,
         email : findUser?.email,
+        ImageUrl : findUser?.ImageUrl,
         token : generateToken(findUser?._id),
     });
   } else {
@@ -113,7 +116,6 @@ const updateaUser = asyncHandler(async (req, res) => {
       {
           firstname : req?.body?.firstname,
           lastname : req?.body?.lastname,
-          mobile : req?.body?.mobile,
           email : req?.body?.email,
       },
     {

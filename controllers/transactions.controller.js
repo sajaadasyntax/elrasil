@@ -29,6 +29,9 @@ const getUserTransactions = asyncHandler(async (req, res) => {
 });
 
 const createTransaction = asyncHandler(async (req, res) => {
+  const fileName = req.file.path;
+  console.log(req.file.path);
+  const basePath = `${req.protocol}://${req.get('host')}/`;
   const cookies = req.cookies;
 if (!cookies?.refreshToken) throw new Error("No refresh token in cookies");
 const refreshToken = cookies.refreshToken;
@@ -38,7 +41,7 @@ const refreshToken = cookies.refreshToken;
     recieverName: req?.body?.recieverName,
     recieverPhone: req?.body?.recieverPhone,
     recieverEmail: req?.body?.recieverEmail,
-    PaymentProof: req?.body?.PaymentProof,
+    PaymentProof:  `${basePath}${fileName}`,
     TransactionAmount: req?.body?.TransactionAmount,
     purposeOfTransaction: req?.body?.purposeOfTransaction,
     senderID: user?.id,

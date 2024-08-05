@@ -31,7 +31,7 @@ mongoose.connect(process.env.MONGODB_SECRET, {
     }
 )
 app.use(bodyparser.json());
-app.use(bodyparser.urlencoded({ extended: false }));
+app.use(bodyparser.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(function(req, res, next) {
     res.header('Access-Control-Allow-Origin', 'http://localhost:4000');
